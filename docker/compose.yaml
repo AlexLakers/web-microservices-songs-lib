@@ -1,0 +1,27 @@
+services:
+  database:
+    image: postgres:17
+    ports:
+      - 5442:5432
+    environment:
+      POSTGRES_USER: adminauthor
+      POSTGRES_PASSWORD: AdminAuthor
+      POSTGRES_DB: songs_lib_author_dev
+    volumes:
+      - db-data:/var/lib/postgres/data
+    networks:
+      backend-net:
+        aliases:
+          - database
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+networks:
+  backend-net:
+    driver: bridge
+volumes:
+  db-data:

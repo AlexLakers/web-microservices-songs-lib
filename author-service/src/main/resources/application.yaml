@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5442/songs_lib_author_dev
+    username: adminauthor
+    password: AdminAuthor
+    driver-class-name: org.postgresql.Driver
+
+  flyway:
+    default-schema: public
+    enabled: true
+    baseline-on-migrate: true
+  data:
+    jdbc:
+      dialect: postgresql
+config:
+  defaultPage: 0
+  defaultSize: 10
+server:
+  port: 8085
