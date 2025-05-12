@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(schema = "public", name = "author")
 public class Author {
 
