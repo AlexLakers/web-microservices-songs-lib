@@ -43,7 +43,7 @@ class AuthorMapperTest {
 
         authorMapper.update(givenDto,givenAuthor);
 
-        Assertions.assertThat(expected.getName().getFirstname()).isEqualTo(givenDto.firstname());
+        Assertions.assertThat(expected.getName().getFirstname()).isEqualTo(givenAuthor.getName().getFirstname());
     }
 
 }

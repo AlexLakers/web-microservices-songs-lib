@@ -25,4 +25,9 @@ public interface AuthorMapper {
         }
         return new Name(firstname, lastname);
     }
+    @AfterMapping
+    default void updateName(WriteDto source,@MappingTarget Author target) {
+        target.getName().setFirstname(source.firstname());
+        target.getName().setLastname(source.lastname());
+    }
 }

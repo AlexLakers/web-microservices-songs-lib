@@ -12,6 +12,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long>, QuerydslP
     @Query(value = "SELECT EXISTS(SELECT 1 FROM author WHERE first_name=:firstname and last_name=:lastname)",nativeQuery = true)
     boolean existByFirstNameAndLastname(String firstname, String lastname);
 
-    Page<Author> findAllBy(Predicate predicate, Pageable pageable);
+    Page<Author> findAll(Predicate predicate, Pageable pageable);
 
 }

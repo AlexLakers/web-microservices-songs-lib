@@ -7,11 +7,8 @@ spring:
 
   flyway:
     default-schema: public
-    enabled: true
-    baseline-on-migrate: true
-  data:
-    jdbc:
-      dialect: postgresql
+    #enabled: true
+    #baseline-on-migrate: true
 config:
   defaultPage: 0
   defaultSize: 10
