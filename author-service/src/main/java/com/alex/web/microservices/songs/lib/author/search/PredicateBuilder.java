@@ -15,21 +15,23 @@ import java.util.function.Function;
 public final class PredicateBuilder {
     private List<Predicate> predicates = new ArrayList<>();
 
-    public static PredicateBuilder builder(){
+    public static PredicateBuilder builder() {
 
         return new PredicateBuilder();
     }
 
-    public <T>PredicateBuilder add(T value, Function<T,Predicate> function){
-        predicates.add(function.apply(value));
+    public <T> PredicateBuilder add(T value, Function<T, Predicate> function) {
+        if (value != null) {
+            predicates.add(function.apply(value));
+        }
         return this;
     }
 
-    public Predicate buildAnd(){
+    public Predicate buildAnd() {
         return Optional.ofNullable(ExpressionUtils.allOf(predicates)).orElse(Expressions.TRUE);
     }
 
-    public Predicate buildOr(){
+    public Predicate buildOr() {
         return Optional.ofNullable(ExpressionUtils.anyOf(predicates)).orElse(Expressions.TRUE);
     }
 }

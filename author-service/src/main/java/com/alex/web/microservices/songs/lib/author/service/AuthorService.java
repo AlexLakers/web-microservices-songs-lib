@@ -1,38 +1,60 @@
 package com.alex.web.microservices.songs.lib.author.service;
 
 import com.alex.web.microservices.songs.lib.author.config.AuthorConfig;
+import com.alex.web.microservices.songs.lib.author.dto.WriteDto;
+import com.alex.web.microservices.songs.lib.author.exception.AuthorNotFoundException;
+import com.alex.web.microservices.songs.lib.author.mapper.AuthorMapper;
 import com.alex.web.microservices.songs.lib.author.model.QAuthor;
 import com.alex.web.microservices.songs.lib.author.search.PredicateBuilder;
 import com.alex.web.microservices.songs.lib.author.search.SearchDto;
 import com.alex.web.microservices.songs.lib.author.exception.AuthorCreationException;
 import com.alex.web.microservices.songs.lib.author.model.Author;
 import com.alex.web.microservices.songs.lib.author.repository.AuthorRepository;
+import com.alex.web.microservices.songs.lib.author.validator.groups.CreateGroup;
 import com.querydsl.core.types.Predicate;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Validated(CreateGroup.class)
+@Transactional(readOnly = true)
 public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorConfig authorConfig;
+    private final AuthorMapper authorMapper;
 
-    public Optional<Author> findById(Long id) {
-        return authorRepository.findById(id);
+    public Author findById(Long id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
 
     public boolean existByFirstNameAndLastname(String firstName, String lastName) {
         return authorRepository.existByFirstNameAndLastname(firstName, lastName);
     }
 
-    public Author save(Author author) {
-        return Optional.ofNullable(authorRepository.save(author))
-                .orElseThrow(() -> new AuthorCreationException("Creation error"));
+@Transactional
+    public Author save(@Valid WriteDto dto) {
+        return Optional.ofNullable(authorMapper.toAuthor(dto))
+                .map(authorRepository::save)
+                .orElseThrow(() -> new AuthorCreationException("An error has been detected during creation new author"));
+    }
+    @Transactional
+    //@Validated(UpdateGroup.class)
+    public Author update(@Valid WriteDto dto, Long id) {
+        return authorRepository.findById(id)
+                .map(author -> {
+                    authorMapper.update(dto, author);
+                    return authorRepository.saveAndFlush(author);
+                }).orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
 
     public Page<Author> findAllBy(SearchDto searchDto) {
@@ -46,6 +68,17 @@ public class AuthorService {
                 .add(searchDto.lastname(), QAuthor.author.name.lastname::containsIgnoreCase)
                 .add(searchDto.birthdate(), QAuthor.author.birthdate::after)
                 .buildAnd();
-        return authorRepository.findAllBy(predicate, pageable);
+        return authorRepository.findAll(predicate, pageable);
     }
+@Transactional
+    public void delete(Long id) {
+        authorRepository.findById(id)
+                .ifPresentOrElse((author -> {
+                    authorRepository.delete(author);
+                    authorRepository.flush();
+                }), () -> {
+                    throw new AuthorNotFoundException("The author with id={%d} is not found".formatted(id));
+                });
+    }
+
 }
