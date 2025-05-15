@@ -12,22 +12,27 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 )
 public interface AuthorMapper {
 
-    @Mapping(target = "name",expression = "java(toName(writeDto.firstname(), writeDto.lastname()))")
+    @Mapping(target = "name", expression = "java(toName(writeDto.firstname(), writeDto.lastname()))")
     Author toAuthor(WriteDto writeDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = IGNORE)
-    void update (WriteDto source,@MappingTarget Author target);
+    void update(WriteDto source, @MappingTarget Author target);
 
 
-    default Name toName(String firstname,String lastname) {
-        if(firstname==null &&  lastname==null) {
+    default Name toName(String firstname, String lastname) {
+        if (firstname == null && lastname == null) {
             return null;
         }
         return new Name(firstname, lastname);
     }
+
     @AfterMapping
-    default void updateName(WriteDto source,@MappingTarget Author target) {
-        target.getName().setFirstname(source.firstname());
-        target.getName().setLastname(source.lastname());
+    default void updateName(WriteDto source, @MappingTarget Author target) {
+        if (source.firstname() != null && !source.firstname().isBlank()) {
+            target.getName().setFirstname(source.firstname());
+        }
+        if (source.lastname() != null && !source.lastname().isBlank()) {
+            target.getName().setLastname(source.lastname());
+        }
     }
 }

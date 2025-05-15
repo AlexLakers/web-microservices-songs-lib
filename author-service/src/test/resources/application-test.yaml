@@ -5,3 +5,4 @@ spring:
     driver-class-name: org.postgresql.Driver
   flyway:
     locations: classpath:db/test-migration
+  test:
