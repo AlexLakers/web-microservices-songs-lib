@@ -7,6 +7,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.4</version>
+        <relativePath/> <!--search parent in repository-->
     </parent>
     <groupId>com.alex.web.microservices</groupId>
     <artifactId>web-microservices-songs-lib</artifactId>

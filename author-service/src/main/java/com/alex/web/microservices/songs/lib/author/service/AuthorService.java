@@ -48,7 +48,7 @@ public class AuthorService {
                 .orElseThrow(() -> new AuthorCreationException("An error has been detected during creation new author"));
     }
     @Transactional
-    //@Validated(UpdateGroup.class)
+    @Validated
     public Author update(@Valid WriteDto dto, Long id) {
         return authorRepository.findById(id)
                 .map(author -> {
@@ -56,8 +56,8 @@ public class AuthorService {
                     return authorRepository.saveAndFlush(author);
                 }).orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
-
-    public Page<Author> findAllBy(SearchDto searchDto) {
+    @Validated
+    public Page<Author> findAllBy(@Valid SearchDto searchDto) {
         Integer page = searchDto.page() == null ? authorConfig.getDefaultPage() : searchDto.page();
         Integer size = searchDto.size() == null ? authorConfig.getDefaultSize() : searchDto.size();
         Pageable pageable = PageRequest.of(page, size);

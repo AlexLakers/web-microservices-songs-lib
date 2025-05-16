@@ -18,6 +18,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  author-service:
+    image: songs-lib/author-service:0.0.1-SNAPSHOT
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/songs_lib_author_dev
+    networks:
+      backend-net:
+        aliases:
+            - author-service
+    ports:
+      - 8086:8086
 
 
 networks:

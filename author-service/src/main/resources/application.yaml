@@ -4,6 +4,8 @@ spring:
     username: adminauthor
     password: AdminAuthor
     driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
 
   flyway:
     default-schema: public
@@ -13,4 +15,4 @@ config:
   defaultPage: 0
   defaultSize: 10
 server:
-  port: 8085
+  port: 8086
