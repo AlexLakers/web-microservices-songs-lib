@@ -59,6 +59,11 @@
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
  <!--   <dependency>
         <groupId>com.optimagrowth</groupId>
         <artifactId>utils</artifactId>
@@ -164,6 +169,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+               <!--if you do not want to use spotify plugin and Dokerfile
+                You can use 'mvn spring-boot:build-image' for build docker image-->
+                <configuration>
+                    <image>
+                        <name>${docker.image.prefix}/${project.artifactId}:latest</name>
+                    </image>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -175,7 +187,8 @@
                     <repository>${docker.image.prefix}/${project.artifactId}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                        <JAR_NAME>${project.build.finalName}.jar</JAR_NAME>
+                        <JAR_DIR>target</JAR_DIR>
                     </buildArgs>
                 </configuration>
                 <executions>
