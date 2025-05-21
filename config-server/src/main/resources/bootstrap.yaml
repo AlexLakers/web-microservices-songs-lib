@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+        - native ,git, vault
+  cloud:
+    config:
+      server:
+        git:
+          username: AlexLakers
+          password: access_token
+          uri: https://github.com/AlexLakers/songs-lib-config.git
+          #searchPaths: longs-lib
+          #default-label: main
+      # label: main
+server:
+  port: 8888
+#Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#encrypt:
+  #key: ${ENCRYPT_KEY:}
+encrypt:
+  key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+
