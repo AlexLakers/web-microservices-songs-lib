@@ -17,6 +17,7 @@
     <description>The app contains microservices to describe songs lib</description>
     <modules>
         <module>author-service</module>
+        <module>eureka-server</module>
     </modules>
 
     <properties>
