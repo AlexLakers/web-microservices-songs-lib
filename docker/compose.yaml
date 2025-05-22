@@ -18,21 +18,53 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  author-service:
+
+  configserver:
+    image: songs-lib/config-server:0.0.1-SNAPSHOT
+    networks:
+      backend-net:
+        aliases:
+          - configserver
+    ports:
+      - 8888:8888
+    environment:
+      ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+  authorservice:
     image: songs-lib/author-service:0.0.1-SNAPSHOT
     depends_on:
       database:
         condition: service_healthy
+      configserver:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/songs_lib_author_dev
     networks:
       backend-net:
         aliases:
-            - author-service
+            - authorservice
     ports:
       - 8086:8086
-
+  eurekaserver:
+    image: songs-lib/eureka-server:0.0.1-SNAPSHOT
+    depends_on:
+      configserver:
+        condition: service_started
+    networks:
+      backend-net:
+        aliases:
+            - eurekaserver
+    ports:
+      - 8081:8081
+  gatewayserver:
+    image: songs-lib/gateway-server:0.0.1-SNAPSHOT
+    depends_on:
+      configserver:
+        condition: service_started
+    networks:
+      backend-net:
+        - aliases:
+            - gatewayserver
 
 networks:
   backend-net:
