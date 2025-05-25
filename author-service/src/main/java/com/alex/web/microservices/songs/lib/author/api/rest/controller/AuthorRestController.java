@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RequestMapping("/api/v1/authors")
 @RequiredArgsConstructor
 @RestController
@@ -31,8 +34,8 @@ public class AuthorRestController {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.update(writeDto, id));
     }
     @GetMapping
-    public ResponseEntity<Page<Author>> getAll(@RequestBody SearchDto searchDto){
-        return ResponseEntity.status(HttpStatus.OK).body(authorService.findAllBy(searchDto));
+    public ResponseEntity<List<Author>> getAll(SearchDto searchDto){
+        return ResponseEntity.status(HttpStatus.OK).body(authorService.findAllBy(searchDto).getContent());
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
