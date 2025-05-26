@@ -1,4 +1,4 @@
-package com.alex.web.microservices.songs.lib.author.util;
+package com.alex.web.microservices.songs.lib.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

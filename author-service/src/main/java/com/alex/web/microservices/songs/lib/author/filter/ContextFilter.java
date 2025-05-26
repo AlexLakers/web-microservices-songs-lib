@@ -1,7 +1,7 @@
 package com.alex.web.microservices.songs.lib.author.filter;
 
-import com.alex.web.microservices.songs.lib.author.util.HeaderUtil;
-import com.alex.web.microservices.songs.lib.author.util.UserContextHolder;
+import com.alex.web.microservices.songs.lib.util.HeaderUtil;
+import com.alex.web.microservices.songs.lib.util.context.UserContextHolder;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,5 @@
-package com.alex.web.microservices.songs.lib.author.util;
+package com.alex.web.microservices.songs.lib.util.context;
 
-
-import java.util.Optional;
 
 public class UserContextHolder {
     private static ThreadLocal<UserContext> contextThreadLocal = new ThreadLocal<>();
