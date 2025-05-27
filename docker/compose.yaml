@@ -18,6 +18,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  databasetwo:
+    image: postgres:17
+    ports:
+      - 5452:5432
+    environment:
+      POSTGRES_USER: adminsong
+      POSTGRES_PASSWORD: AdminSong
+      POSTGRES_DB: songs_lib_song_dev
+    volumes:
+      - db-data-two:/var/lib/postgres/data
+    networks:
+      backend-net:
+        aliases:
+          - databasetwo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   configserver:
     image: songs-lib/config-server:0.0.1-SNAPSHOT
@@ -63,11 +82,37 @@ services:
         condition: service_started
     networks:
       backend-net:
-        - aliases:
+        aliases:
             - gatewayserver
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    #restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./realm-export.json:/opt/jboss/keycloak/realm-export.json
+    command:
+      - start-dev
+    ports:
+      - 8080:8080
+    networks:
+      backend-net:
+        aliases:
+          - keycloak
+  frontendclient:
+    image: songs-lib/gateway-server:0.0.1-SNAPSHOT
+    depends_on:
+      gatewayserver:
+        condition: service_started
+    networks:
+      backend-net:
+        aliases:
+          - frontend
 
 networks:
   backend-net:
     driver: bridge
 volumes:
   db-data:
+  db-data-two:

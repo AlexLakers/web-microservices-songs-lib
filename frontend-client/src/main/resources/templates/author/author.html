@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Author</title>
+</head>
+<body>
+<h1>The specific author</h1>
+<form th:action="@{/dashboard/services/authors/{authorId}/update(authorId=${author.id})}" method="post" th:object="${author}">
+    <!--    <form th:action="@{/users/{userId}/update(userId=${user.id})}" method="post" enctype="multipart/form-data" th:object="${user}">-->
+
+    <label for="firstname">Firstname:
+        <input type="text" name="firstname" id="firstname" th:value="*{name.firstname}">
+    </label><br>
+    <label for="lastname">Lastname:
+        <input type="text" name="lastname" id="lastname" th:value="*{name.lastname}">
+    </label><br>
+    <label for="birthdate">Birthdate:
+        <input type="date" name="birthdate" id="birthdate" th:value="*{birthdate}">
+    </label><br>
+    <button type="submit">Update</button>
+</form>
+<form th:action="@{/dashboard/services/authors/{authorId}/delete(authorId=${author.id})}" method="post">
+    <button type="submit">Delete</button>
+</form>
+</body>

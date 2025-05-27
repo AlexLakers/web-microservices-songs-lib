@@ -1,0 +1,22 @@
+server:
+  port: 8089
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/alexlakers-realm
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: songs-lib
+            client-secret: 1A49BCnfoufmMs3jc2tvPfxsVlQOi8fw
+            scope: openid,profile,email
+            redirect-uri: http://localhost:8089/login/oauth2/code/keycloak
+            authorization-grant-type: authorization_code
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
