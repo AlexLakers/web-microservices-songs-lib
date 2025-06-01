@@ -1,0 +1,1 @@
+SELECT SETVAL ('author_id_seq', (SELECT MAX(id) FROM author));

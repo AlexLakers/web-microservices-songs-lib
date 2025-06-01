@@ -1,7 +1,7 @@
-package com.alex.web.microservices.songs.lib.songs.repository;
+package com.alex.web.microservices.songs.lib.songs.repository.integration;
 
-import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.songs.model.Song;
+import com.alex.web.microservices.songs.lib.songs.repository.SongRepository;
 import com.alex.web.microservices.songs.lib.songs.search.PageDto;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
@@ -18,7 +18,6 @@ import org.springframework.test.context.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

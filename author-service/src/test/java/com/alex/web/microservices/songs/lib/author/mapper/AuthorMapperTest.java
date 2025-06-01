@@ -15,7 +15,6 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 class AuthorMapperTest {
 
