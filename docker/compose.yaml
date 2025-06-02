@@ -109,6 +109,18 @@ services:
       backend-net:
         aliases:
           - frontend
+  redisserver:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    environment:
+      REDIS_PASSWORD: mypass
+    command: [ "sh", "-c","exec redis-server --requirepass $$REDIS_PASSWORD" ]
+    #command: redis-server --requirepass mypass
+    networks:
+      backend-net:
+        aliases:
+          - redisserver
 
 networks:
   backend-net:

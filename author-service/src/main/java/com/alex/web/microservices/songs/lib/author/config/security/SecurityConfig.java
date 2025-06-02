@@ -21,8 +21,8 @@ public class SecurityConfig {
         return http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth->
                         auth.requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/v1/authors/**").hasAnyAuthority("ADMIN","USER")
-                                .anyRequest().denyAll()
+                                /*.requestMatchers("/api/v1/authors/**").hasAnyAuthority("ADMIN","USER")*/
+                                .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth->oauth.jwt(jwt-> jwt.jwtAuthenticationConverter(keycloakJwtTokenConverter))).build();
     }
