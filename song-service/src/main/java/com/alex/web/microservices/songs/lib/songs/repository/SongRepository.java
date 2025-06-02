@@ -1,5 +1,6 @@
 package com.alex.web.microservices.songs.lib.songs.repository;
 
+import com.alex.web.microservices.songs.lib.songs.exception.SongCreationException;
 import com.alex.web.microservices.songs.lib.songs.search.PageDto;
 import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.songs.model.Song;

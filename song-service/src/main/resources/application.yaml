@@ -11,12 +11,44 @@ logging:
     com.alex.web.microservices.songs.lib.songs.SongsServiceApplicationRunner: INFO
     org.springframework.jdbc.core.JdbcTemplate: DEBUG
 
-
 server:
   port: 8090
 pagination:
   default:
-   page: 0
-   size: 50
-   column: id
-   direction: ASC
+    page: 0
+    size: 50
+    column: id
+    direction: ASC
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit-author-service:
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 4
+        record-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+        #treshold % to OPEN
+        failure-rate-threshold: 50
+        #type count or time
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        #min calls for analising errors
+        minimum-number-of-calls: 8
+
+# 8 calls for analise and if fail > 50%, then go to OPEN state.Then 10s waiting in OPEN state.
+  #Then analise 4 calls in HALF-OPEN if fail>50% then OPEN.
+  retry:
+    instances:
+      retry-author-service:
+        wait-duration: 1s
+        max-attempts: 4
+        retry-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+
+#Retry-->CircuitBreaker
+#If use retry+circuit breaker then firstly analize max-attempts=4.If > 50%(circuit-breaker:failure-rate-threshold: 50)
+#then go to OPEN STATE
+
+#If you use fallback method then it just perform during any fail and all.
+
+
