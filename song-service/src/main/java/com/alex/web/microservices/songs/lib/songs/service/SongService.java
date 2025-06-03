@@ -55,10 +55,6 @@ public class SongService {
     }
 
     public Song findById(Long id) {
-        long randomId = ((int) (Math.random() * 12)) + 1;
-        System.out.println(randomId);
-        Author author = authorClient.getAuthor(randomId)
-                .orElseThrow(() -> new AuthorNotFoundException("The author is not found by id: %d".formatted(randomId)));
         return songRepository.findById(id)
                 .orElseThrow(() -> new SongNotFoundException("The song is not found by id: %d".formatted(id)));
     }
@@ -128,7 +124,6 @@ public class SongService {
         log.info("The song:{} has been saved successfully", savedSong);
         return savedSong;
     }
-
 
 
     private CompletableFuture<Song> saveAsyncInOneFuture(WriteDto writeDto) {

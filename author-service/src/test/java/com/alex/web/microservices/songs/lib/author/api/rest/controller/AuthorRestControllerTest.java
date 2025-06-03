@@ -16,6 +16,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -34,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @ActiveProfiles("test")
+@WithMockUser(username = "test", authorities = {"ADMIN", "USER"}, password = "password")
 class AuthorRestControllerTest {
     private final Long ID = 1L;
     private final Long NOT_VALID_ID = 10000L;
@@ -51,9 +54,10 @@ class AuthorRestControllerTest {
         Mockito.when(authorService.findById(ID)).thenReturn(author);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                .get("/api/v1//authors/{id}", ID)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .characterEncoding(StandardCharsets.UTF_8))
+                        .get("/api/v1//authors/{id}", ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(ID))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.birthdate", Matchers.is("1942-06-19")));
@@ -66,6 +70,7 @@ class AuthorRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/authors/{id}", NOT_VALID_ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -79,6 +84,7 @@ class AuthorRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/authors/{id}", ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
@@ -89,8 +95,9 @@ class AuthorRestControllerTest {
         Mockito.doThrow(new AuthorNotFoundException("The author with id={%d} is not found".formatted(NOT_VALID_ID))).when(authorService).delete(Mockito.anyLong());
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/authors/{id}",ID)
-                .characterEncoding(StandardCharsets.UTF_8))
+                        .delete("/api/v1/authors/{id}", ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(new ErrorResponse(HttpStatus.NOT_FOUND.value(), "The author with id={%d} is not found".formatted(NOT_VALID_ID)))));
     }

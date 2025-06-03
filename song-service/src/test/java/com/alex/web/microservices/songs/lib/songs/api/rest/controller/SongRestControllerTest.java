@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -23,12 +25,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = SongRestController.class)
 @ActiveProfiles("test")
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+@WithMockUser(username = "test",authorities = {"USER","ADMIN"})
 class SongRestControllerTest {
 
     private final MockMvc mockMvc;
@@ -46,7 +48,7 @@ class SongRestControllerTest {
         Mockito.when(songService.save(Mockito.any(WriteDto.class))).thenReturn(song);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/songs")
-                        //.with()
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(writeDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,6 +63,7 @@ class SongRestControllerTest {
         Mockito.when(songService.update(Mockito.anyLong(), Mockito.any(WriteDto.class))).thenReturn(song);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/songs/{id}", ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(writeDto))
@@ -71,17 +74,18 @@ class SongRestControllerTest {
 
     @Test
     @SneakyThrows
-    public void givenSearchDto_wheFind_thenReturnStatusOkAndPageDto(){
-        SearchDto searchDto = new SearchDto(0,1,"id","ASC");
-        List<Song> content= Collections.singletonList(song);
-        PageDto pageDto=new PageDto(0,1,3,3,content);
+    public void givenSearchDto_wheFind_thenReturnStatusOkAndPageDto() {
+        SearchDto searchDto = new SearchDto(0, 1, "id", "ASC");
+        List<Song> content = Collections.singletonList(song);
+        PageDto pageDto = new PageDto(0, 1, 3, 3, content);
         Mockito.when(songService.findAll(searchDto)).thenReturn(pageDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/songs/search")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .content(objectMapper.writeValueAsString(searchDto)))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(searchDto)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(3));
 

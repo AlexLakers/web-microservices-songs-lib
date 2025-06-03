@@ -90,13 +90,15 @@ class SongServiceTestWitDatabaseIT {
                 .hasFieldOrPropertyWithValue("album",givenWriteDto.album());
     }
     @Test
-    public void test(){
-        WriteDto givenWriteDto = new WriteDto(1000L,"name" ,"nameeee" );
+    public void givenWriteDto_whenSave_thenReturnSavedSong(){
+        WriteDto givenWriteDto = new WriteDto(1L,"name" ,"nameeee" );
+
         jdbcTemplate.execute("SELECT SETVAL ('song_id_seq', (SELECT MAX(id) FROM song))");
-        System.out.println(songService.save(givenWriteDto));
-        System.out.println(songService.save(givenWriteDto));
-        System.out.println(songService.save(givenWriteDto));
-        System.out.println(songService.save(givenWriteDto));
+
+        Song actual=songService.save(givenWriteDto);
+
+        Assertions.assertThat(actual).hasFieldOrPropertyWithValue("name", givenWriteDto.name())
+                .hasFieldOrPropertyWithValue("album", givenWriteDto.album());
 
     }
 

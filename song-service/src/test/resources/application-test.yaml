@@ -2,5 +2,6 @@ spring:
   datasource:
     password: test
     username: test
+    driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: db-test/changelog/db.changelog-master.yaml

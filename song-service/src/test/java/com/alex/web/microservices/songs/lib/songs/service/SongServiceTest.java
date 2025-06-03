@@ -1,5 +1,7 @@
 package com.alex.web.microservices.songs.lib.songs.service;
 
+import com.alex.web.microservices.songs.lib.songs.client.AuthorClient;
+import com.alex.web.microservices.songs.lib.songs.client.model.Author;
 import com.alex.web.microservices.songs.lib.songs.config.PaginationConfig;
 import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.songs.exception.SongNotFoundException;
@@ -37,6 +39,8 @@ class SongServiceTest {
     private PaginationConfig paginationConfig;
     @Mock
     private SongMapperImpl songMapper;
+    @Mock
+    private AuthorClient authorClient;
     @InjectMocks
     private SongService songService;
 
@@ -78,6 +82,7 @@ class SongServiceTest {
     public void givenWriteDto_whenSave_thenReturnSongWithId() {
         Mockito.when(songRepository.save(Mockito.any(Song.class))).thenReturn(song);
         Mockito.when(songMapper.toSong(Mockito.any(WriteDto.class))).thenReturn(song);
+        Mockito.when(authorClient.getAuthor(Mockito.anyLong())).thenReturn(Optional.of(Author.builder().id(ID).build()));
 
         Song actual = songService.save(writeDto);
 
