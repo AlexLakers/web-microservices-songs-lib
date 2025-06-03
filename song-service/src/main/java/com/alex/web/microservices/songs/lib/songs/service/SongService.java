@@ -121,6 +121,7 @@ public class SongService {
         //add checking exists unique fields or throw exception
         CompletableFuture<Song> future = saveAsyncInOneFuture(writeDto);
         Song savedSong = future.join();
+        log.debug("IT's DEBUG LEVEL MEEEESAGES");
         log.info("The song:{} has been saved successfully", savedSong);
         return savedSong;
     }

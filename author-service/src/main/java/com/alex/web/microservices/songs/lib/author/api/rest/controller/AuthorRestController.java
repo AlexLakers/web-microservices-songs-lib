@@ -5,6 +5,7 @@ import com.alex.web.microservices.songs.lib.author.model.Author;
 import com.alex.web.microservices.songs.lib.author.search.SearchDto;
 import com.alex.web.microservices.songs.lib.author.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,14 @@ import java.util.List;
 @RequestMapping("/api/v1/authors")
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class AuthorRestController {
 
     private final AuthorService authorService;
 
     @GetMapping("/{id}")
     ResponseEntity<Author> getOne(@PathVariable Long id) {
+        log.info("--start 'find author by id' rest endpoint--");
         return ResponseEntity.status(HttpStatus.OK).body(authorService.findById(id));
     }
 

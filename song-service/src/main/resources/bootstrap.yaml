@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: song-service
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      #configserver
+server:
+  port: 8090
