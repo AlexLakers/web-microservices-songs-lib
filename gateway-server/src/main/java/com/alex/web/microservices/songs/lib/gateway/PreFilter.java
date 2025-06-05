@@ -2,6 +2,8 @@ package com.alex.web.microservices.songs.lib.gateway;
 
 
 import com.alex.web.microservices.songs.lib.util.HeaderUtil;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

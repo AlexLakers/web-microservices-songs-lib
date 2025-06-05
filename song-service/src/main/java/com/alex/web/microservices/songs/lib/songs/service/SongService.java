@@ -16,6 +16,7 @@ import com.alex.web.microservices.songs.lib.songs.repository.SongRepository;
 import com.alex.web.microservices.songs.lib.songs.validator.CreateGroup;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.opentelemetry.api.trace.Span;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
