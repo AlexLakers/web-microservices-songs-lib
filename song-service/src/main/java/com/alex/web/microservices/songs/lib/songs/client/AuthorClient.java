@@ -22,10 +22,12 @@ import java.util.Optional;
 @CircuitBreaker(name = "circuit-author-service",fallbackMethod = "getFallbackAuthor")
 public class AuthorClient {
     private final RestTemplate restTemplate;
+    private final WebClient webClient;
+
     public Optional<Author> getAuthor(Long id) {
-        return Optional.ofNullable(WebClient.create()
+        return Optional.ofNullable(webClient
                 .get()
-                .uri("http://localhost:8072/authors/{id}",id)
+                .uri("/authors/{id}",id)
                 .retrieve()
                 .bodyToMono(Author.class)
                 .block());

@@ -1,4 +1,10 @@
 spring:
+  data.redis.database: 0
+  data.redis.host: localhost
+  data.redis.port: 6379
+  data.redis.password: mypass
+  data.redis.timeout: 60000
+  data.redis.client-type: lettuce
   security:
     oauth2:
       resourceserver:
@@ -8,3 +14,6 @@ spring:
 token:
   resource-id: songs-lib
   principal-attribute: preferred_username
+logging:
+  level:
+    org.sprigframework.data.redis: DEBUG

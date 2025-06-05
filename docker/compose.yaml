@@ -115,12 +115,88 @@ services:
       - 6379:6379
     environment:
       REDIS_PASSWORD: mypass
-    command: [ "sh", "-c","exec redis-server --requirepass $$REDIS_PASSWORD" ]
-    #command: redis-server --requirepass mypass
+    command: [ "sh", "-c","exec redis-server --requirepass mypass" ]
+    #command: redis-server --requirepass $$REDIS_PASSWORD
     networks:
       backend-net:
         aliases:
           - redisserver
+  elasticsearch:
+    image: elasticsearch:7.17.1
+    # volumes:
+    # - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9300 #for communication with cluster
+      - 9200:9200 #for REST
+    volumes:
+      - myesdata:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: -Xmx512m -Xms512m
+      ELASTIC_USERNAME: elastic
+      ELASTIC_PASSWORD: MyPw123
+      discovery.type: single-node
+    networks:
+      backend-net:
+        aliases:
+          - elasticsearch
+  logstash:
+    image: logstash:7.16.1 #docker.elastic.co/logstash/logstash:7.11.1
+    command:
+      logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config:/etc/logstash/conf.d
+    ports:
+      - 5000:5000
+    networks:
+      backend-net:
+        aliases:
+          - logstash
+  kibana:
+    image: kibana:7.16.1
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+    networks:
+      backend-net:
+        aliases:
+          - kibana
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    depends_on:
+      - elasticsearch
+    environment:
+      STORAGE_TYPE: elasticsearch
+      ES_HOSTS: elasticsearch:9300
+    networks:
+      backend-net:
+        aliases:
+          - zipkin
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+    networks:
+      backend-net:
+        aliases:
+          - "prometheus"
+  grafana:
+    image: "grafana/grafana:latest"
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    container_name: grafana
+    networks:
+      backend-net:
+        aliases:
+          - "grafana"
 
 networks:
   backend-net:
@@ -128,3 +204,4 @@ networks:
 volumes:
   db-data:
   db-data-two:
+  myesdata:

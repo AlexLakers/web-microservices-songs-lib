@@ -12,6 +12,7 @@ import com.alex.web.microservices.songs.lib.author.model.Author;
 import com.alex.web.microservices.songs.lib.author.repository.AuthorRepository;
 import com.alex.web.microservices.songs.lib.author.validator.groups.CreateGroup;
 import com.querydsl.core.types.Predicate;
+import io.opentelemetry.api.trace.Span;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,10 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
 
     public Author findById(Long id) {
+
+        Span span =Span.current();
+        String traceId=span.getSpanContext().getTraceId();
+        System.out.println("dsadasadas"+traceId);
         return authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
@@ -43,6 +48,7 @@ public class AuthorService {
 
 @Transactional
     public Author save(@Valid WriteDto dto) {
+
         return Optional.ofNullable(authorMapper.toAuthor(dto))
                 .map(authorRepository::save)
                 .orElseThrow(() -> new AuthorCreationException("An error has been detected during creation new author"));

@@ -6,12 +6,10 @@ import com.alex.web.microservices.songs.lib.author.search.SearchDto;
 import com.alex.web.microservices.songs.lib.author.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api/v1/authors")
@@ -29,19 +27,19 @@ public class AuthorRestController {
     }
 
     @PostMapping
-    ResponseEntity<Author> save(@RequestBody WriteDto writeDto){
+    ResponseEntity<Author> save(@RequestBody WriteDto writeDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.save(writeDto));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Author> update(@RequestBody WriteDto writeDto, @PathVariable Long id){
+    public ResponseEntity<Author> update(@RequestBody WriteDto writeDto, @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.update(writeDto, id));
     }
     @GetMapping
-    public ResponseEntity<List<Author>> getAll(SearchDto searchDto){
+    public ResponseEntity<List<Author>> getAll(SearchDto searchDto) {
         return ResponseEntity.status(HttpStatus.OK).body(authorService.findAllBy(searchDto).getContent());
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         authorService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
