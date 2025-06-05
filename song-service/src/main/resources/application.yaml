@@ -8,3 +8,35 @@ spring:
 token:
   resource-id: songs-lib
   principal-attribute: preferred_username
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit-author-service:
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 4
+        record-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+        #treshold % to OPEN
+        failure-rate-threshold: 50
+        #type count or time
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        #min calls for analising errors
+        minimum-number-of-calls: 8
+
+  # 8 calls for analise and if fail > 50%, then go to OPEN state.Then 10s waiting in OPEN state.
+  #Then analise 4 calls in HALF-OPEN if fail>50% then OPEN.
+  retry:
+    instances:
+      retry-author-service:
+        wait-duration: 1s
+        max-attempts: 4
+        retry-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+
+#Retry-->CircuitBreaker
+#If use retry+circuit breaker then in first interaction(1 is my+3 attempts=max attempt=4).Two clics=4x2=8.
+#It count transfer in circuitBreaker.If > 50%(circuit-breaker:failure-rate-threshold: 50)
+#then go to OPEN STATE
+
+#If you use fallback method then it just perform during any fail and all.

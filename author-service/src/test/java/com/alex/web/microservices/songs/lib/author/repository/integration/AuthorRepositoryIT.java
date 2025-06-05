@@ -36,6 +36,47 @@ import java.util.List;
 class AuthorRepositoryIT {
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17");
     private final AuthorRepository authorRepository;
+   /* private final RedisRepository redisRepository;*/
+    private final static Long ID=1L;
+   /* private final Song song =Song.builder()
+            .id(ID)
+            .name("TestName3")
+            .authorId(3L)
+            .album("TestAlbum1")
+            .build();
+    private final Song song1 =Song.builder()
+            .id(ID+1)
+            .name("TestName3")
+            .authorId(3L)
+            .album("TestAlbum1")
+            .build();*/
+
+
+
+   /* @Test
+    public void testSave() {
+        redisRepository.saveSong(song);
+        System.out.println(redisRepository.getSong(song.getId()));
+      *//*  redisRepository.saveSongSet(song);
+        redisRepository.saveSongSet(song1);*//*
+        //System.out.println(redisRepository.getSongsByAuthorId(3L));
+        System.out.println("set");
+        redisRepository.saveSongSet(song);
+        redisRepository.saveSongSet(song1);
+        System.out.println(redisRepository.getSongSet(3L));
+        System.out.println("hash");
+        redisRepository.saveSongHash(song);
+        redisRepository.saveSongHash(song1);
+        System.out.println(redisRepository.getSongHash(3L));
+        System.out.println("value+set");
+        redisRepository.saveSongSetIdAndValue(song);
+        redisRepository.saveSongSetIdAndValue(song1);
+        System.out.println(redisRepository.getSongListBySetIds(3L));
+        redisRepository.deleteSongSetAndValue(3L,ID);
+        redisRepository.deleteSong(ID);
+        System.out.println(redisRepository.getSongListBySetIds(3L));
+
+    }*/
 
     @BeforeAll
     static void startContainer() {

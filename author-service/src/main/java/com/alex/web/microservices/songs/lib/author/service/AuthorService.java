@@ -1,6 +1,8 @@
 package com.alex.web.microservices.songs.lib.author.service;
 
+import com.alex.web.microservices.songs.lib.author.client.song.SongClient;
 import com.alex.web.microservices.songs.lib.author.config.AuthorConfig;
+import com.alex.web.microservices.songs.lib.author.client.song.model.Song;
 import com.alex.web.microservices.songs.lib.author.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.author.exception.AuthorNotFoundException;
 import com.alex.web.microservices.songs.lib.author.mapper.AuthorMapper;
@@ -12,9 +14,12 @@ import com.alex.web.microservices.songs.lib.author.model.Author;
 import com.alex.web.microservices.songs.lib.author.repository.AuthorRepository;
 import com.alex.web.microservices.songs.lib.author.validator.groups.CreateGroup;
 import com.querydsl.core.types.Predicate;
-import io.opentelemetry.api.trace.Span;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Validated(CreateGroup.class)
@@ -32,18 +40,26 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorConfig authorConfig;
     private final AuthorMapper authorMapper;
+    private final SongClient songClient;
 
     public Author findById(Long id) {
-
-        Span span =Span.current();
-        String traceId=span.getSpanContext().getTraceId();
-        System.out.println("dsadasadas"+traceId);
         return authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
 
     public boolean existByFirstNameAndLastname(String firstName, String lastName) {
         return authorRepository.existByFirstNameAndLastname(firstName, lastName);
+    }
+
+    @CircuitBreaker(name = "circuit-song-service")
+    @Retry(name = "retry-song-service",fallbackMethod = "fallbackGetAllSongsByAuthorId")
+    public List<Song> getAllSongsByAuthorId(Long authorId){
+        throw new RuntimeException("");
+       // return songClient.findAllSongByAuthorId(authorId).getBody();
+    }
+    public List<Song> fallbackGetAllSongsByAuthorId(Long authorId, Throwable e){
+        log.error("The service 'song-service' is not available:{}",e.getMessage());
+        return Collections.emptyList();
     }
 
 @Transactional

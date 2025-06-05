@@ -1,17 +1,20 @@
 package com.alex.web.microservices.songs.lib.author.client.song.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldNameConstants;
+import jakarta.persistence.Id;
+import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
-@Data
+import java.io.Serializable;
+
+
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@FieldNameConstants
-public class Song {
+@Data
+@Setter
+@ToString
+@RedisHash("song")
+public class Song implements Serializable {
+    @Id
     private Long id;
     private String name;
     private Long authorId;

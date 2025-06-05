@@ -1,5 +1,6 @@
 package com.alex.web.microservices.songs.lib.author.api.rest.controller;
 
+import com.alex.web.microservices.songs.lib.author.client.song.model.Song;
 import com.alex.web.microservices.songs.lib.author.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.author.model.Author;
 import com.alex.web.microservices.songs.lib.author.search.SearchDto;
@@ -24,6 +25,10 @@ public class AuthorRestController {
     ResponseEntity<Author> getOne(@PathVariable Long id) {
         log.info("--start 'find author by id' rest endpoint--");
         return ResponseEntity.status(HttpStatus.OK).body(authorService.findById(id));
+    }
+    @GetMapping("/{authorId}/songs")
+    public ResponseEntity<List<Song>> getAllSongsByAuthorId(@PathVariable Long authorId){
+        return ResponseEntity.status(HttpStatus.OK).body(authorService.getAllSongsByAuthorId(authorId));
     }
 
     @PostMapping

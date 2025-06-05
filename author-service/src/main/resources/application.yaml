@@ -1,10 +1,4 @@
 spring:
-  data.redis.database: 0
-  data.redis.host: localhost
-  data.redis.port: 6379
-  data.redis.password: mypass
-  data.redis.timeout: 60000
-  data.redis.client-type: lettuce
   security:
     oauth2:
       resourceserver:
@@ -17,3 +11,26 @@ token:
 logging:
   level:
     org.sprigframework.data.redis: DEBUG
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit-song-service:
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 4
+        record-exceptions:
+          - java.lang.Throwable
+        #treshold % to OPEN
+        failure-rate-threshold: 50
+        #type count or time
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        #min calls for analising errors
+        minimum-number-of-calls: 8
+
+  retry:
+    instances:
+      retry-song-service:
+        wait-duration: 1s
+        max-attempts: 4
+        retry-exceptions:
+          - java.lang.Throwable
