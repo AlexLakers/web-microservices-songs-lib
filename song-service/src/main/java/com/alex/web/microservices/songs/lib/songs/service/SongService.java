@@ -4,6 +4,8 @@ import com.alex.web.microservices.songs.lib.songs.client.AuthorClient;
 import com.alex.web.microservices.songs.lib.songs.client.model.Author;
 import com.alex.web.microservices.songs.lib.songs.config.PaginationConfig;
 import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
+import com.alex.web.microservices.songs.lib.songs.events.producer.model.Action;
+import com.alex.web.microservices.songs.lib.songs.events.producer.publisher.SongModificationAction;
 import com.alex.web.microservices.songs.lib.songs.exception.AuthorNotFoundException;
 import com.alex.web.microservices.songs.lib.songs.exception.SaveOperationException;
 import com.alex.web.microservices.songs.lib.songs.exception.SongCreationException;
@@ -42,6 +44,7 @@ public class SongService {
     private final SongMapper songMapper;
     private final AuthorClient authorClient;
     private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+    private final SongModificationAction songModificationAction;
 
     public PageDto findAll(SearchDto searchDto) {
         int page = searchDto.page() == null ? paginationConfig.getPage() : searchDto.page();
@@ -56,20 +59,25 @@ public class SongService {
     }
 
     public Song findById(Long id) {
-        return songRepository.findById(id)
+
+        Song song = songRepository.findById(id)
                 .orElseThrow(() -> new SongNotFoundException("The song is not found by id: %d".formatted(id)));
+
+        songModificationAction.publish(song.getId(), song.getAuthorId(), Action.GET);
+        return song;
     }
 
     @Transactional
     public Song update(Long id, @Valid WriteDto writeDto) {
         //add checking exists unique fields or throw exception
-        return songRepository.findById(id)
+        Song updatedSong = songRepository.findById(id)
                 .map(song -> {
                     songMapper.updateSong(writeDto, song);
                     return songRepository.update(id, song);
                 })
                 .orElseThrow(() -> new SongNotFoundException("The song is not found by id: %d".formatted(id)));
-
+        songModificationAction.publish(updatedSong.getId(), updatedSong.getAuthorId(), Action.UPDATE);
+        return updatedSong;
     }
 
 
@@ -122,7 +130,7 @@ public class SongService {
         //add checking exists unique fields or throw exception
         CompletableFuture<Song> future = saveAsyncInOneFuture(writeDto);
         Song savedSong = future.join();
-        log.debug("IT's DEBUG LEVEL MEEEESAGES");
+        songModificationAction.publish(savedSong.getId(), savedSong.getAuthorId(),Action.SAVE);
         log.info("The song:{} has been saved successfully", savedSong);
         return savedSong;
     }
@@ -144,8 +152,10 @@ public class SongService {
 
     @Transactional
     public boolean delete(Long id) {
-        return songRepository.findById(id)
+        Boolean isDeleted=songRepository.findById(id)
                 .map(song -> songRepository.delete(id))
                 .orElseThrow(() -> new SongNotFoundException("The song is not found by id: %d".formatted(id)));
+        songModificationAction.publish(id,id,Action.DELETE);
+        return isDeleted;
     }
 }

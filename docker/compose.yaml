@@ -197,6 +197,57 @@ services:
       backend-net:
         aliases:
           - "grafana"
+  zookeeper:
+    image: zookeeper
+    ports:
+      - 2181:2181
+    healthcheck:
+      test: [ "CMD","zkServer.sh","status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 05
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      backend-net:
+        aliases:
+          - zookeeper
+  kafkaserver:
+    image: docker.io/bitnami/kafka:3.5 #confluentinc/cp-kafka:latest #docker.io/bitnami/kafka:3.5 # or apache/kafka -new versions
+    ports:
+      - 9092:9092 #fmain port kafka
+      - 29092:29092 #alternate port for local access
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      #INTERNAL-for communication between containers(kafkaserver:9092)
+      #EXTERNAL-for communication from host(localhost:29092)
+      #PLAINTEXT- protocol withowt shifrovanie(in prod use ssl)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://localhost:9092,EXTERNAL://localhost:29092 #Address which get clients
+                            #kafkaserver
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092, EXTERNAL://0.0.0.0:29092
+      #what listener we need to use for communication between brokers(if brokers not alone)
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      #auto create topics for develop
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    healthcheck:
+        test: [ "CMD-SHELL", "echo 'test-message' | kafka-console-producer.sh --broker-list localhost:9092 --topic health-check-topic && kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic health-check-topic --from-beginning --max-messages 1 | grep 'test-message'" ]
+        interval: 15s
+        timeout: 10s
+        retries: 3
+        # interval: 10s
+        # timeout: 30s
+        # retries: 15
+    networks:
+        backend-net:
+          aliases:
+            - kafkaserver
 
 networks:
   backend-net:

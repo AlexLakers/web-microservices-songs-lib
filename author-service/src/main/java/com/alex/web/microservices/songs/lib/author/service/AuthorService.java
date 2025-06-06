@@ -7,6 +7,7 @@ import com.alex.web.microservices.songs.lib.author.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.author.exception.AuthorNotFoundException;
 import com.alex.web.microservices.songs.lib.author.mapper.AuthorMapper;
 import com.alex.web.microservices.songs.lib.author.model.QAuthor;
+import com.alex.web.microservices.songs.lib.author.repository.RedisRepository;
 import com.alex.web.microservices.songs.lib.author.search.PredicateBuilder;
 import com.alex.web.microservices.songs.lib.author.search.SearchDto;
 import com.alex.web.microservices.songs.lib.author.exception.AuthorCreationException;
@@ -41,6 +42,7 @@ public class AuthorService {
     private final AuthorConfig authorConfig;
     private final AuthorMapper authorMapper;
     private final SongClient songClient;
+    private final RedisRepository redisRepository;
 
     public Author findById(Long id) {
         return authorRepository.findById(id)
@@ -52,23 +54,33 @@ public class AuthorService {
     }
 
     @CircuitBreaker(name = "circuit-song-service")
-    @Retry(name = "retry-song-service",fallbackMethod = "fallbackGetAllSongsByAuthorId")
-    public List<Song> getAllSongsByAuthorId(Long authorId){
-        throw new RuntimeException("");
-       // return songClient.findAllSongByAuthorId(authorId).getBody();
+    @Retry(name = "retry-song-service", fallbackMethod = "fallbackGetAllSongsByAuthorId")
+    @Transactional
+    public List<Song> getAllSongsByAuthorId(Long authorId) {
+        List<Song> songs = redisRepository.getSongListBySetIds(authorId);
+        if (songs.isEmpty()) {
+            songs = songClient.findAllSongByAuthorId(authorId).getBody();
+            songs.forEach(redisRepository::saveSongSetIdAndValue);
+            log.info("MISS, songs are not found in Cache-Redis by authorId:{}", authorId);
+        } else {
+            log.info("HIT, the songs: {} was found in Cache-Redis by authorId:{}", songs, authorId);
+        }
+        return songs;
     }
-    public List<Song> fallbackGetAllSongsByAuthorId(Long authorId, Throwable e){
-        log.error("The service 'song-service' is not available:{}",e.getMessage());
+
+    public List<Song> fallbackGetAllSongsByAuthorId(Long authorId, Throwable e) {
+        log.error("The service 'song-service' is not available:{}", e.getMessage());
         return Collections.emptyList();
     }
 
-@Transactional
+    @Transactional
     public Author save(@Valid WriteDto dto) {
 
         return Optional.ofNullable(authorMapper.toAuthor(dto))
                 .map(authorRepository::save)
                 .orElseThrow(() -> new AuthorCreationException("An error has been detected during creation new author"));
     }
+
     @Transactional
     @Validated
     public Author update(@Valid WriteDto dto, Long id) {
@@ -78,6 +90,7 @@ public class AuthorService {
                     return authorRepository.saveAndFlush(author);
                 }).orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
     }
+
     @Validated
     public Page<Author> findAllBy(@Valid SearchDto searchDto) {
         Integer page = searchDto.page() == null ? authorConfig.getDefaultPage() : searchDto.page();
@@ -92,7 +105,8 @@ public class AuthorService {
                 .buildAnd();
         return authorRepository.findAll(predicate, pageable);
     }
-@Transactional
+
+    @Transactional
     public void delete(Long id) {
         authorRepository.findById(id)
                 .ifPresentOrElse((author -> {

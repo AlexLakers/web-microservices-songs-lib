@@ -1,4 +1,21 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+  cloud:
+    function:
+      definition:
+        inputModificationSong
+    stream:
+      bindings:
+        inputModificationSong-in-0:
+          destination: songModificationTopic
+          group: author-group
+          content-type: application/json
+          #consumer:
+            #enable-dlq: true
+
+
+
   security:
     oauth2:
       resourceserver:
@@ -26,7 +43,6 @@ resilience4j:
         sliding-window-size: 10
         #min calls for analising errors
         minimum-number-of-calls: 8
-
   retry:
     instances:
       retry-song-service:
