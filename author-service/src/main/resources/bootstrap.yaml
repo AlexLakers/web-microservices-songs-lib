@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: author-service
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      #configserver
+server:
+  port: 8086
+
+

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: gateway-server
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      #configserver
+server:
+  port: 8072
+logging:
+  level:
+    com.alex.web.microservices.songs.lib.gateway: DEBUG
+    com.netflix: WARN
+    org.springframework.web: WARN
+
+

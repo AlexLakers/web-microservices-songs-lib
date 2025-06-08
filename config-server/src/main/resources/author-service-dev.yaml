@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5442/songs_lib_author_dev 
+    #jdbc:postgresql://database:5432/songs_lib_author_dev
+    username: adminauthor
+    password: '{cipher}6839128bca2b7c08377be880da1e9aca643aebe6cf133b554db943e91608b5c7'
+    #AdnimAuthor
+

@@ -1,0 +1,59 @@
+spring:
+#kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+              #kafkaserver
+  cloud:
+    loadbalancer:
+      enabled: true
+    function:
+      definition: outputSongModification
+    stream:
+      bindings:
+        outputSongModification-out-0:
+          destination: songModificationTopic
+          content-type: application/json
+  jpa:
+    open-in-view: false
+logging:
+  #for micrometr
+  pattern:
+    correlation: '[${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+  include-application-name: false
+  level:
+    com.alex.web.microservices.songs.lib.songs.SongsServiceApplicationRunner: INFO
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+pagination:
+  default:
+    page: 0
+    size: 50
+    column: id
+    direction: ASC
+  cloud:
+    loadbalancer:
+      enabled: true
+#eureka
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8081/eureka/
+                #eurekaserver
+
+management:
+#for zipkin
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+                #zipkin
+      sampling:
+        probability: 1
+#for actuator
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#serviceUrl=service-url

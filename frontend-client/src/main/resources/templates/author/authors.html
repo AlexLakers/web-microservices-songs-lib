@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Login</title>
+</head>
+<body>
+<h2>Authors</h2>
+<h3>Dynamic filter</h3>
+<form th:action="@{/dashboard/services/authors}" method="get" th:object="${search}">
+    <label for="id">Id:
+        <input type="text" name="id" id="id" th:value="*{id()}">
+    </label><br>
+    <label for="firstname">Firstname:
+        <input type="text" name="firstname" id="firstname" th:value="*{firstname()}">
+    </label><br>
+    <label for="lastname">Lastname:
+        <input type="text" name="lastname" id="lastname" th:value="*{lastname()}">
+    </label><br>
+    <label for="birthdate">Birthdate:
+        <input type="date" name="birthdate" id="birthdate" th:value="*{birthdate()}">
+    </label><br>
+    <label for="page">Page:
+        <input type="number" name="page" id="page" th:value="*{page()}">
+    </label><br>
+    <label for="size">Size:
+        <input type="number" name="size" id="size" th:value="*{size()}">
+    </label><br>
+    <button type="submit">Find</button>
+</form>
+<h3>List of authors</h3>
+<div th:each="author : ${authors}">
+   <!-- <a th:href="@{'/dashboard/authors/' + ${author.id}}" th:text="">-->
+        <a th:href="@{'/dashboard/services/authors/' + ${author.id}}" th:text="${author.name.firstname}+' '+ ${author.name.lastname}">Author</a>
+  <!--  <select name="${author.name.firstname} + ' '+ ${author.name.lastname}">-->
+</div>
+
+   <!-- <form th:action="@{/dashboard/authors/}" method="post">
+        <input type="text" name="firstname">
+        <input type="text" name="lastname">
+        <input type="date" name="birthdate">
+        <button type="submit">create</button>
+    </form>-->
+    <br>
+    <form>
+    </form>
+</body>
+</html>

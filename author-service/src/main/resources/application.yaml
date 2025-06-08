@@ -1,0 +1,50 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+  cloud:
+    function:
+      definition:
+        inputModificationSong
+    stream:
+      bindings:
+        inputModificationSong-in-0:
+          destination: songModificationTopic
+          group: author-group
+          content-type: application/json
+          #consumer:
+            #enable-dlq: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/alexlakers-realm
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+token:
+  resource-id: songs-lib
+  principal-attribute: preferred_username
+logging:
+  level:
+    org.sprigframework.data.redis: DEBUG
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit-song-service:
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 4
+        record-exceptions:
+          - java.lang.Throwable
+        #treshold % to OPEN
+        failure-rate-threshold: 50
+        #type count or time
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        #min calls for analising errors
+        minimum-number-of-calls: 8
+  retry:
+    instances:
+      retry-song-service:
+        wait-duration: 1s
+        max-attempts: 4
+        retry-exceptions:
+          - java.lang.Throwable

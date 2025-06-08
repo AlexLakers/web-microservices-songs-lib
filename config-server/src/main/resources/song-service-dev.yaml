@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5452/songs_lib_song_dev
+    #jdbc:postgresql://databasetwo:5432/songs_lib_song_dev
+    username: adminsong
+    password: '{cipher}58c4963b074ebbe08edb158917065f1760f359211cd80125907ae3cb066a9b2f'
+            #AdminSong
