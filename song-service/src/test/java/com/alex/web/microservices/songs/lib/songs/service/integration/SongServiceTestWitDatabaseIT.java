@@ -1,5 +1,7 @@
 package com.alex.web.microservices.songs.lib.songs.service.integration;
 
+import com.alex.web.microservices.songs.lib.songs.client.AuthorClient;
+import com.alex.web.microservices.songs.lib.songs.client.model.Author;
 import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
 import com.alex.web.microservices.songs.lib.songs.model.Song;
 import com.alex.web.microservices.songs.lib.songs.search.PageDto;
@@ -10,14 +12,18 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
+
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -29,6 +35,8 @@ class SongServiceTestWitDatabaseIT {
     private final SongService songService;
     private final JdbcTemplate jdbcTemplate;
     private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:17");
+    @MockitoBean
+    private final AuthorClient authorClient;
     private final Song song =Song.builder()
             .id(ID)
             .name("TestName3")
@@ -94,7 +102,7 @@ class SongServiceTestWitDatabaseIT {
         WriteDto givenWriteDto = new WriteDto(1L,"name" ,"nameeee" );
 
         jdbcTemplate.execute("SELECT SETVAL ('song_id_seq', (SELECT MAX(id) FROM song))");
-
+        Mockito.when(authorClient.getAuthor(Mockito.anyLong())).thenReturn(Optional.of(Author.builder().id(3L).build()));
         Song actual=songService.save(givenWriteDto);
 
         Assertions.assertThat(actual).hasFieldOrPropertyWithValue("name", givenWriteDto.name())

@@ -39,7 +39,7 @@ public class AuthorClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + authorizedClient.getAccessToken().getTokenValue());
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        String uri = UriComponentsBuilder.fromUriString("http://localhost:8072/authors")
+        String uri = UriComponentsBuilder.fromUriString(GATEWAY_AUTHOR_URI)
                 .queryParam("id", dto.id())
                 .queryParam("firstname", dto.firstname())
                 .queryParam("lastname", dto.lastname())

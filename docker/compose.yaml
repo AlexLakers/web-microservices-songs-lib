@@ -46,8 +46,8 @@ services:
           - configserver
     ports:
       - 8888:8888
-    environment:
-      ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+    #environment:
+      #ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
   authorservice:
     image: songs-lib/author-service:0.0.1-SNAPSHOT
     depends_on:
@@ -64,6 +64,22 @@ services:
             - authorservice
     ports:
       - 8086:8086
+  songservice:
+    image: songs-lib/song-service:0.0.1-SNAPSHOT
+    depends_on:
+      databasetwo:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://databasetwo:5432/songs_lib_song_dev
+    networks:
+      backend-net:
+        aliases:
+          - songservice
+    ports:
+      - 8089:8089
   eurekaserver:
     image: songs-lib/eureka-server:0.0.1-SNAPSHOT
     depends_on:
@@ -76,7 +92,9 @@ services:
     ports:
       - 8081:8081
   gatewayserver:
-    image: songs-lib/gateway-server:0.0.1-SNAPSHOT
+    image: songs-lib/gateway-server:1.0-SNAPSHOT
+    ports:
+      - 8072:8072
     depends_on:
       configserver:
         condition: service_started
@@ -86,25 +104,28 @@ services:
             - gatewayserver
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.2
-    #restart: always
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_HTTP_HOST: 0.0.0.0
+    ports:
+      - 8080:8080
+    #restart: always
     volumes:
       - ./realm-export.json:/opt/jboss/keycloak/realm-export.json
     command:
       - start-dev
-    ports:
-      - 8080:8080
     networks:
       backend-net:
         aliases:
           - keycloak
   frontendclient:
-    image: songs-lib/gateway-server:0.0.1-SNAPSHOT
+    image: songs-lib/frontend-client:1.0-SNAPSHOT
     depends_on:
       gatewayserver:
         condition: service_started
+    ports:
+      - 8089:8089
     networks:
       backend-net:
         aliases:
@@ -129,7 +150,7 @@ services:
       - 9300:9300 #for communication with cluster
       - 9200:9200 #for REST
     volumes:
-      - myesdata:/usr/share/elasticsearch/data
+      - myesdata:/usr/share/elasticsearch/data/
     environment:
       ES_JAVA_OPTS: -Xmx512m -Xms512m
       ELASTIC_USERNAME: elastic
@@ -228,9 +249,9 @@ services:
       #EXTERNAL-for communication from host(localhost:29092)
       #PLAINTEXT- protocol withowt shifrovanie(in prod use ssl)
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://localhost:9092,EXTERNAL://localhost:29092 #Address which get clients
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafkaserver:9092,EXTERNAL://localhost:29092 #Address which get clients
                             #kafkaserver
-      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092, EXTERNAL://0.0.0.0:29092
+      KAFKA_LISTENERS: INTERNAL://kafkaserver:9092, EXTERNAL://0.0.0.0:29092
       #what listener we need to use for communication between brokers(if brokers not alone)
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1

@@ -16,6 +16,6 @@ public class HttpClientConfig {
 
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
-        return builder.baseUrl("http://localhost:8072").build();
+        return builder.baseUrl("http://localhost:8072").build();//gatewayserver:8072
     }
 }

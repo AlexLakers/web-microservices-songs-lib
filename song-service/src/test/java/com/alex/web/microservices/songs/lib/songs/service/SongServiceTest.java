@@ -4,6 +4,8 @@ import com.alex.web.microservices.songs.lib.songs.client.AuthorClient;
 import com.alex.web.microservices.songs.lib.songs.client.model.Author;
 import com.alex.web.microservices.songs.lib.songs.config.PaginationConfig;
 import com.alex.web.microservices.songs.lib.songs.dto.WriteDto;
+import com.alex.web.microservices.songs.lib.songs.events.producer.model.Action;
+import com.alex.web.microservices.songs.lib.songs.events.producer.publisher.SongModificationAction;
 import com.alex.web.microservices.songs.lib.songs.exception.SongNotFoundException;
 import com.alex.web.microservices.songs.lib.songs.mapper.SongMapperImpl;
 import com.alex.web.microservices.songs.lib.songs.model.Song;
@@ -41,6 +43,8 @@ class SongServiceTest {
     private SongMapperImpl songMapper;
     @Mock
     private AuthorClient authorClient;
+    @Mock
+    private SongModificationAction songModificationAction;
     @InjectMocks
     private SongService songService;
 
@@ -61,7 +65,7 @@ class SongServiceTest {
     @Test
     public void givenId_whenFound_thenReturnSong() {
         Mockito.when(songRepository.findById(ID)).thenReturn(Optional.of(song));
-
+        Mockito.doNothing().when(songModificationAction).publish(Mockito.anyLong(),Mockito.anyLong(),Mockito.any(Action.class));
         Song actual = songService.findById(ID);
 
         Assertions.assertThat(actual).isEqualTo(song);
@@ -83,6 +87,7 @@ class SongServiceTest {
         Mockito.when(songRepository.save(Mockito.any(Song.class))).thenReturn(song);
         Mockito.when(songMapper.toSong(Mockito.any(WriteDto.class))).thenReturn(song);
         Mockito.when(authorClient.getAuthor(Mockito.anyLong())).thenReturn(Optional.of(Author.builder().id(ID).build()));
+        Mockito.doNothing().when(songModificationAction).publish(Mockito.anyLong(),Mockito.anyLong(),Mockito.any(Action.class));
 
         Song actual = songService.save(writeDto);
 
@@ -94,6 +99,7 @@ class SongServiceTest {
         Mockito.when(songRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(song));
         Mockito.doNothing().when(songMapper).updateSong(Mockito.any(WriteDto.class), Mockito.any(Song.class));
         Mockito.when(songRepository.update(Mockito.anyLong(), Mockito.any(Song.class))).thenReturn(song);
+        Mockito.doNothing().when(songModificationAction).publish(Mockito.anyLong(),Mockito.anyLong(),Mockito.any(Action.class));
 
         Song actual = songService.update(ID, writeDto);
 
@@ -121,6 +127,7 @@ class SongServiceTest {
     public void givenId_whenDelete_thenReturnTrue(){
         Mockito.when(songRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(song));
         Mockito.doReturn(true).when(songRepository).delete(ID);
+        Mockito.doNothing().when(songModificationAction).publish(Mockito.anyLong(),Mockito.anyLong(),Mockito.any(Action.class));
 
         boolean actual=songService.delete(ID);
 

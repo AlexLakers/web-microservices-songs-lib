@@ -1,14 +1,4 @@
 spring:
-  data:
-    redis:
-      database: 0
-      host: localhost
-            #redisserver
-      port: 6379
-      password: mypass
-      timeout: 60000
-      client-type: lettuce
-
   datasource:
     username: test
     password: test

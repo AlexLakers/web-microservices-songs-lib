@@ -14,8 +14,6 @@ spring:
           #consumer:
             #enable-dlq: true
 
-
-
   security:
     oauth2:
       resourceserver:
