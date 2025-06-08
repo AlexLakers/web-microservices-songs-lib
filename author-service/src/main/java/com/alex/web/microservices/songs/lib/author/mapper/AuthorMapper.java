@@ -7,6 +7,11 @@ import org.mapstruct.*;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
+/**
+ * This class as a mapper for author-entity by map-struct framework.
+ * @see Author author.
+ * @see WriteDto dto.
+ */
 @Mapper(builder = @Builder(disableBuilder = true),
         componentModel = MappingConstants.ComponentModel.SPRING
 )

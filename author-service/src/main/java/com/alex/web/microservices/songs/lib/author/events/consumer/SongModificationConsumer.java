@@ -10,6 +10,10 @@ import org.springframework.messaging.Message;
 
 import java.util.function.Consumer;
 
+/**
+ * This class as a consumer for get  messages from kafka.
+ *The messages can be received from song-service about modification a specific song.
+ */
 @Configuration
 @RequiredArgsConstructor
 @Slf4j

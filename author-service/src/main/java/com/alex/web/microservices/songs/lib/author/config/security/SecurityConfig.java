@@ -8,6 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * This class as a config for security of this service.
+ * It contains the main bean 'securityFilterChain' for create security-policy.
+ */
 @Configuration
 public class SecurityConfig {
     private final KeycloakJwtTokenConverter keycloakJwtTokenConverter;

@@ -32,6 +32,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class as a service-layer on this app.It contains all the methods for
+ * realization of buisness logic.
+ * @see Author author-entity.
+ * @see AuthorRepository repository.
+ * @see AuthorMapper mapper.
+ *
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,14 +52,38 @@ public class AuthorService {
     private final SongClient songClient;
     private final RedisRepository redisRepository;
 
+    /**
+     * Returns founded author-entity by id.
+     * @param id id of author.
+     * @return author.
+     */
     public Author findById(Long id) {
-        return authorRepository.findById(id)
+        log.debug("The method 'findById' with arg:{}", id);
+        Author foundedAuthor= authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
+        log.info("Founded author by id:{}", foundedAuthor);
+        return foundedAuthor;
     }
 
+    /**
+     * Returns result of boolean operation available entity by fullname.
+     * @param firstName firstname for search.
+     * @param lastName lastname for search.
+     * @return true if entity exists by conditions or else false.
+     */
     public boolean existByFirstNameAndLastname(String firstName, String lastName) {
         return authorRepository.existByFirstNameAndLastname(firstName, lastName);
     }
+
+    /**
+     * Returns list of songs by id of author.
+     * This method is protected using resilience-lib.
+     * Firstly, occurs request to redis-cache to check available data in there.
+     * After it if teh data is not exist then occurs request to Song-service using httpClient.
+     * And then founded data is saved to redis-cache.
+     * @param authorId if of author.
+     * @return list of song.
+     */
 
     @CircuitBreaker(name = "circuit-song-service")
     @Retry(name = "retry-song-service", fallbackMethod = "fallbackGetAllSongsByAuthorId")
@@ -68,31 +100,60 @@ public class AuthorService {
         return songs;
     }
 
+    /**
+     * This method is fallback-method realization for 'getAllSongsByAuthorId'.
+     * @param authorId id of author.
+     * @param e exception.
+     * @return list of song.
+     */
     public List<Song> fallbackGetAllSongsByAuthorId(Long authorId, Throwable e) {
         log.error("The service 'song-service' is not available:{}", e.getMessage());
         return Collections.emptyList();
     }
 
+    /**
+     * Saves a new author in the database using input-dto.
+     * @param dto input-dto
+     * @return author.
+     */
     @Transactional
     public Author save(@Valid WriteDto dto) {
-
-        return Optional.ofNullable(authorMapper.toAuthor(dto))
+        log.debug("The method 'save' with arg:{}", dto);
+        Author savedAuthor= Optional.ofNullable(authorMapper.toAuthor(dto))
                 .map(authorRepository::save)
                 .orElseThrow(() -> new AuthorCreationException("An error has been detected during creation new author"));
+        log.info("A new author with id:{} has been created",savedAuthor.getId());
+        return savedAuthor;
     }
 
+    /**
+     * Updates author in the database using input-dto.
+     * @param dto input-dto
+     * @return author.
+     */
     @Transactional
     @Validated
     public Author update(@Valid WriteDto dto, Long id) {
-        return authorRepository.findById(id)
+        log.debug("The method 'update' with arg:{}", dto);
+        Author updatedAuthor= authorRepository.findById(id)
                 .map(author -> {
                     authorMapper.update(dto, author);
                     return authorRepository.saveAndFlush(author);
                 }).orElseThrow(() -> new AuthorNotFoundException("The author with id={%d} is not found".formatted(id)));
+        log.info("The author with id:{} has been updated",id);
+        return updatedAuthor;
     }
 
+    /**
+     * Returns page with authors by input search dto.
+     * Firstly, occurs the predicate building process.
+     * Then, occurs search using predicate and sort-info.
+     * @param searchDto input-dto(conditions).
+     * @return page of authors.
+     */
     @Validated
     public Page<Author> findAllBy(@Valid SearchDto searchDto) {
+        log.debug("The method 'findAllBy' with arg:{}", searchDto);
         Integer page = searchDto.page() == null ? authorConfig.getDefaultPage() : searchDto.page();
         Integer size = searchDto.size() == null ? authorConfig.getDefaultSize() : searchDto.size();
         Pageable pageable = PageRequest.of(page, size);
@@ -103,11 +164,18 @@ public class AuthorService {
                 .add(searchDto.lastname(), QAuthor.author.name.lastname::containsIgnoreCase)
                 .add(searchDto.birthdate(), QAuthor.author.birthdate::after)
                 .buildAnd();
-        return authorRepository.findAll(predicate, pageable);
+        Page<Author> foundPage=authorRepository.findAll(predicate, pageable);
+        log.info("Founded page of authors by search-dto:{}", foundPage);
+        return foundPage;
     }
 
+    /**
+     * Delete author by id.
+     * @param id id of author.
+     */
     @Transactional
     public void delete(Long id) {
+        log.debug("The method 'delete' with args:{}",id);
         authorRepository.findById(id)
                 .ifPresentOrElse((author -> {
                     authorRepository.delete(author);

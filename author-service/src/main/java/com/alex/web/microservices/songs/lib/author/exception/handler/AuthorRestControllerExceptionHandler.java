@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * This class contains the main of methods for handling exception process.
+ * It will catch all the exceptions and react on it.
+ */
 @RestControllerAdvice(basePackages = "com.alex.web.microservices.songs.lib.author.api.rest.controller")
 public class AuthorRestControllerExceptionHandler extends ResponseEntityExceptionHandler {
 

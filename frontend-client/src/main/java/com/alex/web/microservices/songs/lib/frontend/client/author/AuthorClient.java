@@ -16,6 +16,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class is HttpClient to call remote service 'author-service' using gateway-server.
+ * It occurs with different http clients(rest-template,web-client..).
+ */
 @Component
 @RequiredArgsConstructor
 public class AuthorClient {

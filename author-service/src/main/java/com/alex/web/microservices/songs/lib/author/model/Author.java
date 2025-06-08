@@ -7,6 +7,10 @@ import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDate;
 
+/**
+ * This class a model that is contains fields and structs which based on the database 'author'.
+ * @see Name name.
+ */
 @Entity
 @Data
 @NoArgsConstructor

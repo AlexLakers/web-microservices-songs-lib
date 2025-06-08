@@ -7,6 +7,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * This class as a config to create and configure two beans for redis:LettuceConnectionFactory and RedisTemplate.
+ * It is not used  here(default).
+ */
 @Configuration
 public class RedisConfig {
         //I used default RedisTemplate.It is not used.

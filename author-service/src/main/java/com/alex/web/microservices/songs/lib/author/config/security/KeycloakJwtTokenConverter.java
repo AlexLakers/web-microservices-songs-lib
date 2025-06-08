@@ -11,6 +11,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class as a converter from Jwt-token from keycloak server to Specific auth token(Jwt).
+ * It uses claims in access token for build auth token.
+ * @see Jwt jwt
+ * @see JwtAuthenticationToken token
+ */
 @RequiredArgsConstructor
 public class KeycloakJwtTokenConverter implements Converter<Jwt, JwtAuthenticationToken> {
 

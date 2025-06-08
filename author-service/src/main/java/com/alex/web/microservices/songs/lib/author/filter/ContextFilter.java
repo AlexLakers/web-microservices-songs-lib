@@ -9,6 +9,11 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
+/**
+ * This class as a filter for pre-handling all the request for this service.
+ * It allows get traceId from request and save it in own context.
+ * But it is not used because
+ */
 @Slf4j
 @Controller
 public class ContextFilter implements Filter {

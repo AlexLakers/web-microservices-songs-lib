@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * This class as a repository and it contains my own  methods for interaction with redis-storage.
+ * It contains different data structs:set,hash,key-value....
+ */
 @Repository
 @RequiredArgsConstructor
 public class RedisRepository {

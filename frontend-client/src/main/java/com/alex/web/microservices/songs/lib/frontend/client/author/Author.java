@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * This class is model of 'author-service' for visualisation in dashboard.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

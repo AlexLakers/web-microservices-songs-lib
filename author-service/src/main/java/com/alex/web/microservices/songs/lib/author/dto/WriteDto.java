@@ -9,6 +9,12 @@ import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
+/**
+ * This class as an input-dto for save and update operations.
+ * @param firstname firstname of author.
+ * @param lastname lastname of author.
+ * @param birthdate birthdate of author.
+ */
 public record WriteDto(
         @NotBlank(message = "The firstname can't be empty or null", groups = CreateGroup.class)
         String firstname,

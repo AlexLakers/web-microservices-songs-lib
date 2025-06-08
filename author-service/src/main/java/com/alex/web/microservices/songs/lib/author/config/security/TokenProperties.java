@@ -7,7 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
-
+/**
+ * This class as a set-properties for security.
+ * They map from .yaml.
+ */
 @Setter
 @Getter
 @Configuration

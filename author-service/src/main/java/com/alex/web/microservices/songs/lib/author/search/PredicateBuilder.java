@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * This class as a builder to create predicate which contains all the predicates as a parts.
+ * @see Predicate predicate.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PredicateBuilder {
     private List<Predicate> predicates = new ArrayList<>();

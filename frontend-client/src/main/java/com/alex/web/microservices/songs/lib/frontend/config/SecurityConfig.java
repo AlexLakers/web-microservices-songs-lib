@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * This class as a config for security of this service.
+ * It contains the main bean 'securityFilterChain' for create security-policy.
+ */
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true,securedEnabled = true,prePostEnabled = true)
 public class SecurityConfig {
