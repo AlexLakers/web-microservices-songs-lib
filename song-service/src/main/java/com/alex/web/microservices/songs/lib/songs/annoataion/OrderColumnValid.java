@@ -9,6 +9,10 @@ import org.mapstruct.TargetType;
 import java.lang.annotation.*;
 import java.util.List;
 
+/**
+ * This annotation defines order of validation column in ordering .
+ */
+
 @Constraint(validatedBy = OrderColumnValidConstraintValidator.class)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)

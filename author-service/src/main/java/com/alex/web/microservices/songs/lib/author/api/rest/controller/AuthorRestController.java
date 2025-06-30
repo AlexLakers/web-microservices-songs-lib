@@ -31,6 +31,7 @@ public class AuthorRestController {
      * @param id id of author
      * @return author-entity
      */
+
     @GetMapping("/{id}")
     ResponseEntity<Author> getOne(@PathVariable Long id) {
         log.info("--start 'find author by id' rest endpoint--");
@@ -43,6 +44,7 @@ public class AuthorRestController {
      * @param authorId id of authors.
      * @return list of songs.
      */
+
     @GetMapping("/{authorId}/songs")
     public ResponseEntity<List<Song>> getAllSongsByAuthorId(@PathVariable Long authorId) {
         log.info("--start 'find songs by id of author' rest endpoint--");
@@ -54,9 +56,10 @@ public class AuthorRestController {
      * @param writeDto input-dto.
      * @return a saved author.
      */
+
     @PostMapping
     ResponseEntity<Author> save(@RequestBody WriteDto writeDto) {
-        log.info("--start 'save a new ong by input write dto' rest endpoint--");
+        log.info("--start 'save a new author by input write dto' rest endpoint--");
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.save(writeDto));
     }
 
@@ -66,9 +69,10 @@ public class AuthorRestController {
      * @param id id of updated author.
      * @return an updated author.
      */
+
     @PutMapping("/{id}")
     public ResponseEntity<Author> update(@RequestBody WriteDto writeDto, @PathVariable Long id) {
-        log.info("--start 'update an available song by input write dto' rest endpoint--");
+        log.info("--start 'update an available author by input write dto' rest endpoint--");
         return ResponseEntity.status(HttpStatus.OK).body(authorService.update(writeDto, id));
     }
 
@@ -77,6 +81,7 @@ public class AuthorRestController {
      * @param searchDto set input parameters for search.
      * @return list of authors.
      */
+
     @GetMapping
     public ResponseEntity<List<Author>> getAll(SearchDto searchDto) {
         log.info("--start 'find authors by input-dto for search' rest endpoint--");
@@ -88,9 +93,10 @@ public class AuthorRestController {
      * @param id id of author.
      * @return status-code.
      */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        log.info("--start 'delete an available song by id' rest endpoint--");
+        log.info("--start 'delete an available author by id' rest endpoint--");
         authorService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -16,6 +16,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
+/**
+ * This class is a HttpClient for remote calls 'authorService'.
+ * It uses webClient as a basic functional.
+ */
 @RequiredArgsConstructor
 @Component
 @Retry(name = "retry-author-service", fallbackMethod = "getFallbackAuthor")
