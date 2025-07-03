@@ -6,6 +6,9 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Arrays;
 
+/**
+ * This class allows you to check name of column which is transferred from user.
+ */
 public class OrderColumnValidConstraintValidator implements ConstraintValidator<OrderColumnValid,String> {
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

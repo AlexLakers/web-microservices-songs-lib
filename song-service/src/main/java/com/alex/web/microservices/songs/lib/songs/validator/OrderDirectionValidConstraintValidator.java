@@ -8,6 +8,9 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Arrays;
 
+/**
+ * This class helps to check transferred direction of order('ASC,'DESC').
+ */
 public class OrderDirectionValidConstraintValidator implements ConstraintValidator<OrderDirectionValid,String> {
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
