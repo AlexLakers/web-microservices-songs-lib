@@ -89,6 +89,7 @@ public class AuthorService {
     @Retry(name = "retry-song-service", fallbackMethod = "fallbackGetAllSongsByAuthorId")
     @Transactional
     public List<Song> getAllSongsByAuthorId(Long authorId) {
+        log.debug("The method 'getAllSongsByAuthorId' with arg:{}", authorId);
         List<Song> songs = redisRepository.getSongListBySetIds(authorId);
         if (songs.isEmpty()) {
             songs = songClient.findAllSongByAuthorId(authorId).getBody();

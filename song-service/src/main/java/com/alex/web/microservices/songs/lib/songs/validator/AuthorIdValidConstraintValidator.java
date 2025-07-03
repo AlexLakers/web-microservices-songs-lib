@@ -8,6 +8,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This class allows to check author id during other operations in this service.
+ * Occurs interaction with 'Author-service' using some HttpClient.
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class AuthorIdValidConstraintValidator implements ConstraintValidator<AuthorIdValid, Long> {
