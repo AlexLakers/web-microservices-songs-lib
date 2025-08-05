@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+/**
+ * This config define two http-clients.
+ */
 @Configuration
 public class HttpClientConfig {
     @Bean

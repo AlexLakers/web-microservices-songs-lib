@@ -6,6 +6,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * This class as a security configuration of this app.
+ * It overrides the main security bean-'securityFilterChain'.
+ * We define public  and private endpoints in here.
+ */
 @Configuration
 public class SecurityConfig {
     private final KeycloakJwtTokenConverter keycloakJwtTokenConverter;
@@ -20,7 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->
                         auth.requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/v1/songs/**").hasAnyAuthority("ADMIN","USER")
-                                .anyRequest().permitAll()
+                                .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth->oauth.jwt(jwt-> jwt.jwtAuthenticationConverter(keycloakJwtTokenConverter))).build();
     }

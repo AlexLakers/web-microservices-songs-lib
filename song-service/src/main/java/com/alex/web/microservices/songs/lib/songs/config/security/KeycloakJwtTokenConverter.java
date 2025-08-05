@@ -11,6 +11,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is converter from Jwt token to AuthToken using access-token by OAUTh2.0
+ * @see Jwt
+ * @see JwtAuthenticationToken
+ */
 @RequiredArgsConstructor
 public class KeycloakJwtTokenConverter implements Converter<Jwt, JwtAuthenticationToken> {
 

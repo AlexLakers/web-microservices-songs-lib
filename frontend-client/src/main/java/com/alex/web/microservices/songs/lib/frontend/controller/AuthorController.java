@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
+/**
+ * This  controller for interaction with author-service using REST-client {@link AuthorClient cleint}
+ *  It represents author.html and authors.html
+ */
 @Controller
 @RequestMapping("/dashboard/services/authors")
 @RequiredArgsConstructor

@@ -5,6 +5,14 @@ import com.alex.web.microservices.songs.lib.songs.annoataion.OrderDirectionValid
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
+/**
+ * This class as an input-dto for search page of author.
+ * @param page page number.
+ * @param size page size.
+ * @param sortColumn column for sorting.
+ * @param sortDirection direction for sorting.
+ */
+
 public record SearchDto(@PositiveOrZero(message = "The page should be positive or zero")
                         Integer page,
                         @Positive(message = "The size should be positive")
