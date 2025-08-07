@@ -11,6 +11,10 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Sinks;
 
+/**
+ * This class creates and sends message to own buss of messages.
+ * @see SongModificationPublisher publisher.
+ */
 @RequiredArgsConstructor
 @Component
 public class SongModificationAction {

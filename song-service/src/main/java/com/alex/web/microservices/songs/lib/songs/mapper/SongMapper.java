@@ -7,11 +7,19 @@ import org.mapstruct.*;
 
 import java.util.List;
 
+/**
+ * This is mapper for {@link Song songEntity}.
+ */
 @Mapper(builder = @Builder(disableBuilder = true),
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface SongMapper {
     Song toSong(WriteDto writeDto);
 
+    /**
+     * Performs mapping(copy) from entity to dto using our own map method.
+     * @param writeDto dto.
+     * @param song entity.
+     */
     @Mapping(target = "authorId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "name",expression = "java(map(writeDto.name(),song.getName()))")
     @Mapping(target = "album",expression = "java(map(writeDto.album(),song.getAlbum()))")

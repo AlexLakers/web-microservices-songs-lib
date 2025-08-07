@@ -11,11 +11,21 @@ import reactor.util.concurrent.Queues;
 
 import java.util.function.Supplier;
 
+/**
+ * This class is publisher. It defines own buss of messages.
+ * Also it defines the output channel and action for sending message to message-broker.
+ */
+
 @Configuration
 @Getter
 public class SongModificationPublisher {
 
     private Sinks.Many<Message<SongModification>> songModificationSink=Sinks.many().multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE,false);
+
+    /**
+     * In here we just subscribe on buss and wait for messages from there.
+     * @return supplier-bean.
+     */
 
     @Bean
     public Supplier<Flux<Message<SongModification>>> outputSongModification(){
