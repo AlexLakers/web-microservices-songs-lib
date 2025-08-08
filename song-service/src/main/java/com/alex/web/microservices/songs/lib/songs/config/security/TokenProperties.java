@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
+/**
+ * This class contains some properties for security-configuration.
+ * @see KeycloakJwtTokenConverter
+ */
 
 @Setter
 @Getter

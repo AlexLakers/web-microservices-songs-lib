@@ -10,7 +10,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-
+/**
+ * This class contains the main of methods for handling exception process.
+ * It will catch all the exceptions and react on it.
+ */
 @RestControllerAdvice(basePackages = "com.alex.web.microservices.songs.lib.songs.api.rest.controller")
 @Slf4j
 public class SongRestControllerExceptionHandler /*extends ResponseEntityExceptionHandler*/ {

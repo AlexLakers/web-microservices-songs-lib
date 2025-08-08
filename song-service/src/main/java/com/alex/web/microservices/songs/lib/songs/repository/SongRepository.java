@@ -18,6 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * This class contains all the necessary operations with database 'song'.
+ * It contains own methods and default methods.
+ * @see Song song-entity.
+ * @see Repository
+ */
+
 @Repository
 @RequiredArgsConstructor
 public class SongRepository {
