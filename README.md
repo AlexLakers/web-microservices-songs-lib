@@ -57,3 +57,29 @@ As I sad early this service uses database 'Postgres' for permanent storage. But 
 This service contains funtions for interaction with  alone database 'songs_lib_song'. It allows some user to find any song in 
 abstract library using dynamic filter(name,author and so on). We can get specific page with specific size if we want.
 This service interacts with 'author-service' using REST-clients.
+
+### Message-broker
+As a message broker was choosed Kafka 3.5. In additional I used zookeeper as an orchestration system for kafka.
+Kakfa used for comminication process between 'Author-service' as a consumer and 'Song-Service' as a producer.
+Song-service notifies 'Auhtor-service' if some data was changed. It occurs using kafka and Spring-Cloud-Stream.
+Some words about it: If some data are changed in 'Song-service' then the publisher sends message to kafka-server
+using Suplier Spring-Cloud-Stream. After it 'Author-service' gets a specific message from kafka-server and do corresponding
+actions with Redis-storage.
+
+### Eureka-Server
+This service is discovery service for clients(microservices).
+
+### Gateway-server.
+This service is api-gateway server. It used as a single point this app for routing and filtering.
+
+### Config-server
+This service is config-server to store config  of this app separately from app.
+In here I used git repo for it 'song-lib-config' 
+
+https://github.com/AlexLakers/songs-lib-config.git
+
+### Frontend-client
+This service is dashboard for interaction with available services. Now you can use 'Author-service' and 'Song-service'.
+This service uses MVC pattern and contains .html pages for visualization all the necessary information by entered input data.
+Also this app uses for authorization and authentication processes. We can get token_id and access token from Keycloak
+using this app as a 'oauth-client'.
