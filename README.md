@@ -83,3 +83,39 @@ This service is dashboard for interaction with available services. Now you can u
 This service uses MVC pattern and contains .html pages for visualization all the necessary information by entered input data.
 Also this app uses for authorization and authentication processes. We can get token_id and access token from Keycloak
 using this app as a 'oauth-client'.
+
+### Security System
+I use spring-security-starter to provide secirity in this app. In additional I install authorization server 'Keycloak' to
+manage process authentication and authorization. We must create our own realm in Keycloak with full set roles,users and applications.
+Also we can use standard enpoints which provides Keylocak server to get token or to check token and so on.
+So, what about intercation different components during this process. When some user of this app click on start page or specific service
+in dashboard page then he need to finish authentication process using keycloak login-form.After it this app gets authorization code
+and sends request to keycloak to get access token and token_id. Ok, we have tokens.Then we can go to our services with it.
+'Author-service' and 'Song-service' as resourse-servers and to interact with them we need to have token.After it token will check
+using Keycloak.
+
+### Building system
+AS a building system I used Maven. Also I used Docker to manage images and containers.
+In particular I used Dockerfile maven plugin to create images for all the microservices by Dockerfiles.
+What about containers, I choosed Docker-compose to describe and create services(containers) using compose.yaml.
+
+> - You can build .jar files for all the services using one command in parent project 'web-microservices-songs-lib/':
+```
+./mvnw clean package
+```
+> - After it we must make Dockerfile for each service. It located in '/web-microservices-songs-lib/XXX-service/Dockerfile':
+> - And we can build image manually using docker build command. Or we can use dockerfile plugin '/web-microservices-songs-lib'
+```
+./mvnw dockerfile:build
+```
+> - After it we nust run all our services 'web-microservices-songs-lib':
+```
+docker compose -f docker/compose.yaml up
+```
+
+
+  
+ 
+This app can be used as a base for product data managment system(PDM). You need also to use it as a Hierarchical Data Storage with authentication and authorization functions.
+As a client of this app you can use web intarface with html pages for registartion a new user, for log in,for specifications or details data managment.
+Possible, you will want to use data from this service in your app then you need to pay attention to REST-API for getting data formatted .JSON between different system.
