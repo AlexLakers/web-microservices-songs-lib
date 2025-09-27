@@ -119,3 +119,65 @@ docker compose -f docker/compose.yaml up
 This app can be used as a base for product data managment system(PDM). You need also to use it as a Hierarchical Data Storage with authentication and authorization functions.
 As a client of this app you can use web intarface with html pages for registartion a new user, for log in,for specifications or details data managment.
 Possible, you will want to use data from this service in your app then you need to pay attention to REST-API for getting data formatted .JSON between different system.
+
+## More datails 
+This app has ***MVC*** part:
+The main page of this app allows you go to any page using header buttons.
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/5.png?raw=true)
+
+For example, if you are not authenticated user then you can click on 'Registartion' page and finish registartions operation.
+Similary, you can go to login page,logout, profile of current user and so on.
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/1.png?raw=true)
+
+After authentication you can add new parent node(Specification) to database using special form.
+You can also find available specifications using specific params for search.For example, you can 
+set field and direction of sort. What about pagination then it is available for you too.
+of course you can update or delete your specifications. Similary , you can manage set details in parent specification.
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/6.png?raw=true)
+
+As I sad early you can save new specification or detail:
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/11.png?raw=true)
+
+Also if you have role 'ADMIN' then you have access to ***Admin page***(***see navigation menu):
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/10.png?raw=true)
+
+
+You can also update,create and delete user for this app:
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/9.png?raw=true)
+
+As I sad early you can use ***REST-API*** too. More information about REST endpoints 'src/main/resources/api-docs.json'.
+
+```json
+/api/v1/specifications": {
+      "get": {
+        "tags": [
+          "rest-specification-controller"
+        ],
+        "operationId": "findAll_1",
+        "parameters": [
+          {
+            "name": "specificationSearchDto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SpecificationSearchDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageSpecificationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+.....
+```
+
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/32.png?raw=true)
