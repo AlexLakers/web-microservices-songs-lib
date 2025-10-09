@@ -181,3 +181,22 @@ As I sad early you can use ***REST-API*** too. More information about REST endpo
 ```
 
 ![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/32.png?raw=true)
+
+## Security
+I used spring-security to configure authentication and authorization process.
+I override defaults security configurations bean-'SecurityFilterChain' two times with different order.
+I did it to realize different authentication methods. I mean the fallowing methods:
+for REST I used the httpBasic authorization,for web intarface I apply my own login form with 'UsernamePasswordAuthFilter' and 'OAUTH2.0AuthenticationFilter' at your choice.
+I want to say several words about my using ***OAUTH2.0*** in this app. As a provider I used Google AuthServer, therefore client of this app
+should be registrated in Google. When the Client will visit login form and click corresponding button  after it client will be redirected to GoogleAuthServer
+for finished authentication procedure and getting a specific authorization code. After it client totransfer this code to AuthClient-App,then app to confirm this code
+and get access token,***JWT-token***.Unfortunately, we need to build our own realization OidcUser by roles from database(not Google).I did it with wrapper, I ***merge 'UserDetails' and 'OidcUser'.***
+
+## About database and migration schema
+As a database I used PostgreSQL v17.
+The main tables:detail,specifcation,users.
+Additional tables for autditing: detail_aud,specification_aud,users_aud,log_Mesage.
+As a migration framework I chosed ***'Liquibase'.***
+
+![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/4.png?raw=true)
+
