@@ -200,3 +200,12 @@ As a migration framework I chosed ***'Liquibase'.***
 
 ![alt text](https://github.com/AlexLakers/ParserJsonCsvToXml/blob/master/WinFormsCsvJsonXml/App_Data/pictures/4.png?raw=true)
 
+## About the the main components 
+  > - I used Spring-Boot v3.4.1(Data-Jpa,Jdbc,Web,Security,Validation,Tymeleaf,Test,Envers....)
+  > - As a template engine I used Tymeleaf.
+  > - As a database is choosed 'PostgreSQL' V 17.0
+  > - As a building system I used 'Maven' V 3.6.3.
+  > - As a system of conteiners I used 'Docker' 27.3.1 and wirted my own Dockerfile and compose.yaml.
+  > - java version 22.
+  > - Mapstruct framework for mapping.
+
