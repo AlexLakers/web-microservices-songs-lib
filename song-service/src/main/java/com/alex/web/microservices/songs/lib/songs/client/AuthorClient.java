@@ -39,4 +39,7 @@ public class AuthorClient {
     private Optional<Author> getFallbackAuthor(Long id, Throwable e) {
         return Optional.empty();
     }
+    private Optional<String> getHytrixRealization(){
+        return null;
+    }
 }
